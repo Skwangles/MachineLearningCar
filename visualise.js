@@ -27,6 +27,16 @@ class Visualiser {
         }
     }
 
+    /**
+     * Draws each individual level of nodes
+     * @param {*} ctx - canvas
+     * @param {*} level - level number
+     * @param {*} left - leftmost available coord
+     * @param {*} top - top most available coord
+     * @param {*} width - width of canvas
+     * @param {*} height - height of canvas
+     * @param {*} outputLabels - what to draw over the nodes
+     */
     static drawLevel(ctx, level, left, top, width, height, outputLabels) {
         const right = left + width;
         const bottom = top + height;

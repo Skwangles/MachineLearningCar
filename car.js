@@ -43,6 +43,12 @@ class Car {
         }
     }
 
+    /**
+     * Determine if a collision has occured
+     * @param {*} roadBorders 
+     * @param {*} traffic 
+     * @returns 
+     */
     _assessDamage(roadBorders, traffic) {
         for (let i = 0; i < roadBorders.length; i++) {
             if (polysIntersect(this.polygon, roadBorders[i])) {
@@ -57,6 +63,10 @@ class Car {
         return false;
     }
 
+    /**
+     * Turn car into a polygon/boundary checkable shape
+     * @returns 
+     */
     _createPolygon() {
         const points = [];
         const rad = Math.hypot(this.width, this.height) / 2;
@@ -68,7 +78,9 @@ class Car {
         return points;
     }
 
-
+    /**
+     * Executes move functions on the car
+     */
     _move() {
         if (this.controls.forward) {
             this.speed += this.acceleration;

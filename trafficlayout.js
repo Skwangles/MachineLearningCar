@@ -33,8 +33,6 @@ class TrafficLayout {
 
         ];
         // for (let i = 0; i < this.carLevels; i++) {
-
-
         //     let carsInLane = Math.random() * (this.road.laneCount - 1);
         //     let takenLanes = [];
 
@@ -47,7 +45,6 @@ class TrafficLayout {
         //         this.traffic.push(new Car(road.getLaneCenter(lane), this.baseY - i * this.gapSize, 30, 50, false, 2))
         //     }
         // }
-        // this.backupTraffic = JSON.parse(JSON.stringify(this.traffic));
         return this.traffic;
     }
 }

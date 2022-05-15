@@ -2,22 +2,33 @@ class NeuralNetwork {
     constructor(neuronCounts) {
         this.levels = [];
         for (let i = 0; i < neuronCounts.length - 1; i++) {
-            this.levels.push(new Level(
+            this.levels.push(new Layer(
                 neuronCounts[i], neuronCounts[i + 1]
             ));
         }
     }
 
+    /**
+     * Exectues feedfoward progressively on each layer
+     * @param {*} givenInputs 
+     * @param {*} network 
+     * @returns 
+     */
     static feedForward(givenInputs, network) {
-        let outputs = Level.feedForward(
+        let outputs = Layer.feedForward(
             givenInputs, network.levels[0]);
         for (let i = 1; i < network.levels.length; i++) {
-            outputs = Level.feedForward(
+            outputs = Layer.feedForward(
                 outputs, network.levels[i]);
         }
         return outputs;
     }
 
+    /**
+     * Evolves the network by a random amount
+     * @param {*} network - network to modify
+     * @param {*} amount - How extreme should the mutations be
+     */
     static mutate(network, amount = 1) {
         network.levels.forEach(level => {
             for (let i = 0; i < level.biases.length; i++) {
@@ -40,7 +51,7 @@ class NeuralNetwork {
     }
 }
 
-class Level {
+class Layer {
     constructor(inputCount, outputCount) {
         this.inputs = new Array(inputCount);
         this.outputs = new Array(outputCount);
@@ -51,18 +62,22 @@ class Level {
             this.weights[i] = new Array(outputCount);
         }
 
-        Level._randomize(this);
+        Layer._randomize(this);
     }
 
-    static _randomize(level) {
-        for (let i = 0; i < level.inputs.length; i++) {
-            for (let j = 0; j < level.outputs.length; j++) {
-                level.weights[i][j] = Math.random() * 2 - 1;
+    /**
+     * Creates completely random weights/values
+     * @param {*} layer
+     */
+    static _randomize(layer) {
+        for (let i = 0; i < layer.inputs.length; i++) {
+            for (let j = 0; j < layer.outputs.length; j++) {
+                layer.weights[i][j] = Math.random() * 2 - 1;
             }
         }
 
-        for (let i = 0; i < level.biases.length; i++) {
-            level.biases[i] = Math.random() * 2 - 1;
+        for (let i = 0; i < layer.biases.length; i++) {
+            layer.biases[i] = Math.random() * 2 - 1;
         }
     }
 

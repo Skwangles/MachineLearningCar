@@ -1,3 +1,6 @@
+// CODE WAS IMPROVED FROM https://www.youtube.com/watch?v=Rs_rAxEsAvI&t=5028s
+
+
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = 200;
 const margin = 40;
@@ -14,19 +17,27 @@ let road = new Road(carCanvas.width / 2, carCanvas.width - margin, Math.floor(3)
 let trafficLayout = new TrafficLayout(road, 40, 200, -400);
 
 let cars = generateCars(500);
-let bestCar = cars[0];
+let bestPerformingCar = cars[0];
 let focusCar = cars[0];
 
-
+//Configuring generation counting
 let closestToEnd = 999999999;
 let prevValue = closestToEnd;
 let consecValueNonChanges = 0;
+
+if (localStorage.getItem("genNum")) {
+    localStorage.setItem("genNum", parseInt(localStorage.getItem("genNum")) + 1);
+} else {
+    localStorage.setItem("genNum", 0);
+}
+document.getElementById("gencount").innerHTML = "Generation: " + localStorage.getItem("genNum");
+
 
 if (localStorage.getItem("bestBrain")) {
     for (let i = 0; i < cars.length; i++) {
         cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"))
         if (i != 0) {
-            NeuralNetwork.mutate(cars[i].brain, 0.15)
+            NeuralNetwork.mutate(cars[i].brain, 0.2)
         }
     }
 }
@@ -43,27 +54,37 @@ function generateCars(N) {
 }
 
 
-
+/**
+ * Save the best best, so it is not lost on reload
+ */
 function save() {
-    localStorage.setItem("bestBrain", JSON.stringify(bestCar.brain));
+    localStorage.setItem("bestBrain", JSON.stringify(bestPerformingCar.brain));
 }
 
+/**
+ * Discard & reset AI training
+ */
 function discard() {
     localStorage.removeItem("bestBrain");
+    localStorage.removeItem("genNum");
     window.location = window.location.href;
 }
 
+/**
+ * Determine which car has the best fitness (that which is closest to beyond the final traffic item)
+ * @returns 
+ */
 function getBest() {
     focusCar = cars.find(c => c.y == Math.min(...cars.map(c => c.y))); //Current focus of the window - NOT THE OVERALL BEST PERFORMING
 
     if (focusCar.y < trafficLayout.traffic[trafficLayout.traffic.length - 1].y - 100) {
-        bestCar = focusCar;
+        bestPerformingCar = focusCar;
         save();
         return;
     }
     if (closestToEnd > distBetweenY(trafficLayout.traffic[trafficLayout.traffic.length - 1].y, focusCar.y)) {
         closestToEnd = distBetweenY(trafficLayout.traffic[trafficLayout.traffic.length - 1].y, focusCar.y);
-        bestCar = focusCar;
+        bestPerformingCar = focusCar;
     }
 }
 
@@ -108,20 +129,16 @@ function animate(time) {
 
     road.draw(ctx);
     for (let i = 0; i < trafficLayout.traffic.length; i++) {
-        trafficLayout.traffic[i].draw(ctx, "red");
+        trafficLayout.traffic[i].draw(ctx, "black");
     }
 
     ctx.globalAlpha = 0.2;
     for (let i = 0; i < cars.length; i++) {
-        cars[i].draw(ctx, "blue");
+        cars[i].draw(ctx, "red");
     }
     ctx.globalAlpha = 1;
-    focusCar.draw(ctx, "blue", true);
+    focusCar.draw(ctx, "red", true);
     ctx.restore();
-
-
-
-
 
 
     networkCTX.lineDashOffset = -time / 50;
