@@ -4,7 +4,7 @@
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = 200;
 const margin = 40;
-const cyclesPerCall = 5;
+const cyclesPerCall = 10;
 const networkCanvas = document.getElementById("networkCanvas");
 networkCanvas.width = 500;
 
@@ -134,10 +134,10 @@ function animate(time) {
 
     ctx.globalAlpha = 0.2;
     for (let i = 0; i < cars.length; i++) {
-        cars[i].draw(ctx, "red");
+        cars[i].draw(ctx, "blue");
     }
     ctx.globalAlpha = 1;
-    focusCar.draw(ctx, "red", true);
+    focusCar.draw(ctx, "blue", true);
     ctx.restore();
 
 
