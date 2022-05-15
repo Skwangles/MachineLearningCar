@@ -129,7 +129,7 @@ function animate(time) {
 
     road.draw(ctx);
     for (let i = 0; i < trafficLayout.traffic.length; i++) {
-        trafficLayout.traffic[i].draw(ctx, "black");
+        trafficLayout.traffic[i].draw(ctx, "red");
     }
 
     ctx.globalAlpha = 0.2;
