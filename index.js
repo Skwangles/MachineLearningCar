@@ -4,7 +4,7 @@
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = 200;
 const margin = 40;
-const cyclesPerCall = 10;
+const cyclesPerCall = 7;
 const networkCanvas = document.getElementById("networkCanvas");
 networkCanvas.width = 500;
 
