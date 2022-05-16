@@ -7,7 +7,7 @@ const margin = 40;
 const cyclesPerCall = 7;
 const networkCanvas = document.getElementById("networkCanvas");
 networkCanvas.width = 500;
-
+const completed = false;
 const ctx = carCanvas.getContext("2d");
 const networkCTX = networkCanvas.getContext("2d");
 
@@ -80,6 +80,7 @@ function getBest() {
     if (focusCar.y < trafficLayout.traffic[trafficLayout.traffic.length - 1].y - 100) {
         bestPerformingCar = focusCar;
         save();
+        completed = true;
         return;
     }
     if (closestToEnd > distBetweenY(trafficLayout.traffic[trafficLayout.traffic.length - 1].y, focusCar.y)) {
@@ -94,6 +95,8 @@ animate();
 
 function animate(time) {
 
+
+
     for (let count = 0; count < cyclesPerCall; count++) {
         for (let i = 0; i < trafficLayout.traffic.length; i++) {
             trafficLayout.traffic[i].update(road.borders, []);
@@ -106,6 +109,14 @@ function animate(time) {
 
         getBest(); //Update focus & best value
 
+
+        //End trainging
+        if (completed == true) {
+            document.getElementById("gencount").innerHTML = "SUCCESS!<br/>(Click button to restart training)<br/>Problem solved on generation: " + localStorage.getItem("genNum");
+            return; //Cease drawing frames - winner is found
+        }
+
+        //Generation control
         if (closestToEnd == prevValue) {
             consecValueNonChanges++;
         } else {
@@ -119,11 +130,11 @@ function animate(time) {
         }
     }
 
+
     carCanvas.height = window.innerHeight;
     networkCanvas.height = window.innerHeight;
 
-
-
+    //Drawing physical shapes
     ctx.save();
     ctx.translate(0, -focusCar.y + carCanvas.height * 0.7);
 
@@ -143,5 +154,6 @@ function animate(time) {
 
     networkCTX.lineDashOffset = -time / 50;
     Visualiser.drawNetwork(networkCTX, focusCar.brain);
+
     requestAnimationFrame(animate);
 }
