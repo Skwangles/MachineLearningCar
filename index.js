@@ -1,10 +1,8 @@
 // CODE WAS IMPROVED FROM https://www.youtube.com/watch?v=Rs_rAxEsAvI&t=5028s
 
-
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = 200;
 const margin = 40;
-const cyclesPerCall = 7;
 const networkCanvas = document.getElementById("networkCanvas");
 networkCanvas.width = 500;
 const completed = false;
@@ -12,18 +10,39 @@ const ctx = carCanvas.getContext("2d");
 const networkCTX = networkCanvas.getContext("2d");
 
 
-//On first load setup
-let road = new Road(carCanvas.width / 2, carCanvas.width - margin, Math.floor(3));
-let trafficLayout = new TrafficLayout(road, 40, 200, -400);
 
-let cars = generateCars(500);
-let bestPerformingCar = cars[0];
-let focusCar = cars[0];
+//User specified values
+let cyclesPerCall = 7;
+let N = 500;
+let mutationAmp = 0.2;
 
-//Configuring generation counting
-let closestToEnd = 999999999;
-let prevValue = closestToEnd;
-let consecValueNonChanges = 0;
+if (localStorage.getItem("speed")) {
+    document.getElementById("speed").value = localStorage.getItem("speed");
+    cyclesPerCall = localStorage.getItem("speed")
+} else {
+    //Default values
+    localStorage.setItem("speed", cyclesPerCall);
+    document.getElementById("speed").value = cyclesPerCall;
+}
+
+
+if (localStorage.getItem("cars")) {
+    document.getElementById("cars").value = localStorage.getItem("cars");
+    N = localStorage.getItem("cars");
+} else {
+    //Default values
+    localStorage.setItem("cars", N);
+    document.getElementById("cars").value = N;
+}
+
+if (localStorage.getItem("variation")) {
+    document.getElementById("variation").value = localStorage.getItem("variation");
+    mutationAmp = localStorage.getItem("variation");
+} else {
+    localStorage.setItem("variation", mutationAmp);
+    document.getElementById("variation").value = mutationAmp;
+}
+
 
 if (localStorage.getItem("genNum")) {
     localStorage.setItem("genNum", parseInt(localStorage.getItem("genNum")) + 1);
@@ -33,11 +52,47 @@ if (localStorage.getItem("genNum")) {
 document.getElementById("gencount").innerHTML = "Generation: " + localStorage.getItem("genNum");
 
 
+//Update saved values
+function updateSpeed(speed) {
+    cyclesPerCall = speed;
+    localStorage.setItem("speed", cyclesPerCall);
+}
+
+function updateCars(cars) {
+    N = cars;
+    localStorage.setItem("cars", N);
+}
+
+function updateVariation(variation) {
+    mutationAmp = variation;
+    localStorage.setItem("variation", mutationAmp);
+}
+
+
+
+
+
+
+//On first load setup
+let road = new Road(carCanvas.width / 2, carCanvas.width - margin, Math.floor(3));
+let trafficLayout = new TrafficLayout(road, 40, 200, -400);
+
+let cars = generateCars(N);
+let bestPerformingCar = cars[0];
+let focusCar = cars[0];
+
+//Configuring generation counting
+let closestToEnd = 999999999;
+let prevValue = closestToEnd;
+let consecValueNonChanges = 0;
+
+
+
 if (localStorage.getItem("bestBrain")) {
     for (let i = 0; i < cars.length; i++) {
         cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"))
         if (i != 0) {
-            NeuralNetwork.mutate(cars[i].brain, 0.2)
+            NeuralNetwork.mutate(cars[i].brain, mutationAmp)
         }
     }
 }
@@ -113,6 +168,7 @@ function animate(time) {
         //End trainging
         if (completed == true) {
             document.getElementById("gencount").innerHTML = "SUCCESS!<br/>(Click button to restart training)<br/>Problem solved on generation: " + localStorage.getItem("genNum");
+
             networkCTX.lineDashOffset = -time / 50;
             Visualiser.drawNetwork(networkCTX, focusCar.brain);
             return; //Cease drawing frames - winner is found
