@@ -113,6 +113,8 @@ function animate(time) {
         //End trainging
         if (completed == true) {
             document.getElementById("gencount").innerHTML = "SUCCESS!<br/>(Click button to restart training)<br/>Problem solved on generation: " + localStorage.getItem("genNum");
+            networkCTX.lineDashOffset = -time / 50;
+            Visualiser.drawNetwork(networkCTX, focusCar.brain);
             return; //Cease drawing frames - winner is found
         }
 
