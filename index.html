@@ -14,9 +14,9 @@
     <canvas id="carCanvas"></canvas>
     <div id="verticalButtons">
         <label for="speed">Updates per frame</label>
-        <input type="number" name="speed" id="speed" placeholder="# updates per frame" oninput="updateSpeed(this.value);">
+        <input type="number" name="speed" id="speed" placeholder="# updates per frame" min="1" step="5" max="30" oninput="updateSpeed(this.value);">
         <label for="cars">Cars per generation</label>
-        <input type="number" name="cars" id="cars" placeholder="# cars per gen" oninput="updateCars(this.value);">
+        <input type="number" name="cars" id="cars" placeholder="# cars per gen" min="1" step="10" max="1000" oninput="updateCars(this.value);">
         <label for="variation">Mutation amplification</label>
         <input type="range" name="variation" id="variation" placeholder="Mutation amplification" max="1" min="0.05" step="0.05" value="0.2" oninput="rangevalue.innerHTML = this.value" onchange="updateVariation(this.value);">
         <label id="rangevalue"></label>
