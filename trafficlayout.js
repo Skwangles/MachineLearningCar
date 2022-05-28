@@ -17,7 +17,7 @@ class TrafficLayout {
 
 
     /**
-     * Creates random layout of the traffic obstacles
+     * Creates layout of the traffic obstacles
      * @returns array of traffic obstacles
      */
     generateLevel() {
